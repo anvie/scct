@@ -22,6 +22,20 @@ libraryDependencies ++= Seq(
   }
 )
 
-publishTo := Some(Resolver.file("file",  new File("../gh-pages/maven-repo")))
+crossPaths := true
+
+publishMavenStyle := true
+
+publishTo <<= version {
+    (v: String) =>
+        val ansviaRepo = "http://scala.repo.ansvia.com/nexus"
+        if (v.trim.endsWith("SNAPSHOT"))
+            Some("snapshots" at ansviaRepo + "/content/repositories/snapshots")
+        else
+            Some("releases" at ansviaRepo + "/content/repositories/releases")
+}
+
+credentials += Credentials(Path.userHome / ".ivy2" / ".credentials-ansvia")
 
 resolvers += "scala-tools-releases" at "https://oss.sonatype.org/content/groups/scala-tools/"
+
